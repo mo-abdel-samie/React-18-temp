@@ -1,35 +1,76 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Route, Routes, useRoutes } from "react-router-dom";
+
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./assets/style.css";
+
+import MainFooter from "./components/MainFooter";
+import MainNavbar from "./components/MainNavbar";
+import Home from "./pages/Home/Home";
+import Error404 from "./pages/Error404";
+import About from "./pages/About/About";
+import Student from "./pages/Student/Student";
+import Profile from "./pages/Student/children/Profile/Profile";
+import Course from "./pages/Student/children/Course/Course";
+import Courses from "./pages/Student/children/Courses/Courses";
+import StudentLayout from "./pages/Student/StudentLayout";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const routes = useRoutes([
+    {
+      path: "/",
+      element: <Home />,
+    },
+    {
+      path: "/about",
+      element: <About />,
+    },
+    {
+      path: "/student",
+      children: [
+        {
+          element: <StudentLayout />,
+          children: [
+            {
+              path: "",
+              element: <Student />, // /student
+            },
+            {
+              path: "profile",
+              element: <Profile />, // /student/profile
+            },
+            {
+              path: "courses",
+              element: <Courses />, // /student/profile
+            },
+          ],
+        },
+        {
+          path: "course/:courseId",
+          element: <Course />, // /student/profile
+        },
+      ],
+    },
+    {
+      path: "/*",
+      element: <Error404 />,
+    },
+  ]);
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <MainNavbar />
+      {routes}
+
+      {/* <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/student" element={<Student />} />
+        <Route path="/student/profile" element={<Profile />} />
+        <Route path="*" element={<Error404 />} />
+      </Routes> */}
+      <MainFooter />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
